@@ -3,7 +3,7 @@ package sudoku;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.text.FlowView;
+
 
 /**
  * The main Sudoku program
@@ -16,14 +16,28 @@ public class SudokuMain extends JFrame {
    JPanel center, controllerPanel;
    JButton restartGameBtn, cBtn, exitBtn, hardBtn, midBtn, easyBtn, slove, aboutBtn;
    JComboBox<String> difficultyDropBox;
-
+   
    // Constructor
    public SudokuMain() {
+      //Design Component
+      String dir = System.getProperty("user.dir").replace("\\", "/");
+
       String[] optionsToChoose = { "Easy", "Medium", "Hard" };
+
       Container cp = getContentPane();
       cp.setLayout(new BorderLayout());
 
       cp.add(board, BorderLayout.CENTER);
+      this.setIconImage(new ImageIcon(dir+"/src/sudoku/Resource/icon.png").getImage());
+      
+      //this.add(new JLabel("", new ImageIcon(dir+"/src/sudoku/Resource/sudoku_bg.gif"), JLabel.CENTER));
+
+      String fonts_list[] = 
+      GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+
+      for (int i = 0; i < fonts_list.length; i++) {
+         System.out.println(fonts_list[i]);
+      }
 
       // Add a button to the south to re-start the game
       // ......
@@ -51,7 +65,7 @@ public class SudokuMain extends JFrame {
          public void actionPerformed(ActionEvent e) {
             String dropboxData = difficultyDropBox.getItemAt(difficultyDropBox.getSelectedIndex());
             System.out.print(difficulty(dropboxData).level);
-            // board.init();
+            board.init();
             newGameBtn.setEnabled(false);
             restartGameBtn.setEnabled(true);
          }
@@ -102,6 +116,7 @@ public class SudokuMain extends JFrame {
       pack(); // Pack the UI components, instead of setSize()
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Handle window closing
       setTitle("Sudoku");
+      changeFont(controllerPanel);
       setVisible(true);
    }
 
@@ -135,5 +150,18 @@ public class SudokuMain extends JFrame {
       }
 
       return temp;
+   }
+
+   public static void changeFont ( Component component)
+   {
+      Font font = new Font("ROG Fonts", 0, 10); 
+      component.setFont ( font );
+      if ( component instanceof Container )
+      {
+         for ( Component child : ( ( Container ) component ).getComponents () )
+         {
+               changeFont ( child );
+         }
+      }
    }
 }

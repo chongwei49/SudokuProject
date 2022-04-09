@@ -53,6 +53,8 @@ public class GameBoard extends JPanel {
       super.setLayout(new BorderLayout());
       super.add(mainPanel, BorderLayout.CENTER);
 
+      SudokuMain.changeFont(mainPanel);
+
       // [TODO 3] Allocate a common listener as the ActionEvent listener for all the
       // Cells (JTextFields)
       CellInputListener listener = new CellInputListener();
