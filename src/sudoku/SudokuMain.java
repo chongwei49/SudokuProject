@@ -15,9 +15,11 @@ public class SudokuMain extends JFrame {
    // JPanel[][] paneles;
    JPanel center, controllerPanel;
    JButton restartGameBtn, cBtn, exitBtn, hardBtn, midBtn, easyBtn, slove, aboutBtn;
+   JComboBox<String> difficultyDropBox;
 
    // Constructor
    public SudokuMain() {
+      String[] optionsToChoose = { "Easy", "Medium", "Hard" };
       Container cp = getContentPane();
       cp.setLayout(new BorderLayout());
 
@@ -37,16 +39,21 @@ public class SudokuMain extends JFrame {
       newGameBtn.setSize(20, 50);
       // timer = new Timer(1000, action);
 
+      /*------------------------panel for Difficulty Drop Box -------------------------------------*/
+
+      difficultyDropBox = new JComboBox<>(optionsToChoose);
+      difficultyDropBox.setBounds(80, 50, 140, 20);
+
       /*------------------------panel for new game button -------------------------------------*/
       newGameBtn.addActionListener(new ActionListener() {
 
          @Override
          public void actionPerformed(ActionEvent e) {
-            // counter = 0;
-            // timer.start();
-            // restgame();
-            // Sudoku.newGame();
-            board.init();
+            String dropboxData = difficultyDropBox.getItemAt(difficultyDropBox.getSelectedIndex());
+            System.out.print(difficulty(dropboxData).level);
+            // board.init();
+            newGameBtn.setEnabled(false);
+            restartGameBtn.setEnabled(true);
          }
       });
 
@@ -62,6 +69,7 @@ public class SudokuMain extends JFrame {
 
       /*------------------------panal for new New Game button -------------------------------------*/
       restartGameBtn = new JButton("Restart Game");
+      restartGameBtn.setEnabled(false);
       restartGameBtn.addActionListener(new ActionListener() {
 
          @Override
@@ -80,7 +88,9 @@ public class SudokuMain extends JFrame {
          }
       });
 
+      controllerPanel.add(difficultyDropBox);
       controllerPanel.add(newGameBtn);
+
       controllerPanel.add(aboutBtn);
       controllerPanel.add(restartGameBtn);
       controllerPanel.add(exitBtn);
@@ -105,5 +115,25 @@ public class SudokuMain extends JFrame {
             new SudokuMain(); // Let the constructor do the job
          }
       });
+   }
+
+   private Difficulty difficulty(String dropboxData) {
+      Difficulty temp;
+      switch (dropboxData) {
+         case "Easy":
+            temp = Difficulty.EASY;
+            break;
+         case "Medium":
+            temp = Difficulty.MEDIUM;
+            break;
+         case "Hard":
+            temp = Difficulty.HARD;
+            break;
+         default:
+            temp = Difficulty.EASY;
+            break;
+      }
+
+      return temp;
    }
 }
