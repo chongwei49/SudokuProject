@@ -2,6 +2,9 @@ package sudoku;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 import javax.swing.*;
 
 /**
@@ -18,14 +21,14 @@ public class SudokuMain extends JFrame {
 
    static StopWatch stopWatch;
 
-   static IORankingDB ioRankingDB;
+   ArrayList<Player> player_list;
 
    static String dir = System.getProperty("user.dir").replace("\\", "/");
 
    // Constructor
    public SudokuMain() {
       stopWatch = new StopWatch();
-      ioRankingDB = new IORankingDB();
+
       // Design Component
       
 
@@ -81,12 +84,49 @@ public class SudokuMain extends JFrame {
       });
 
       /*------------------------panal for new about button -------------------------------------*/
-      aboutBtn = new JButton("About");
+      aboutBtn = new JButton("Scoreboard");
 
       aboutBtn.addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
-            JOptionPane.showMessageDialog(cp, "By Sean Young and Luo Chong Wei");
+            try {
+               DBProcess dbProcess = new DBProcess(DBConnect.getConnection());
+               player_list = dbProcess.getAllPlayer();
+               for(int i=0; i<player_list.size(); i++){
+                  System.out.println(player_list.get(i).getName());
+               }
+
+               System.out.println(dbProcess.updatePlayer(player_list, "Sean", 100000));
+            } catch (ClassNotFoundException | SQLException e1) {
+               e1.printStackTrace();
+            }
+
+            
+            String rankStr = "";
+            int elapsedTime = 0;
+            int miliseconds = 0;
+            int seconds = 0;
+            int minutes = 0;
+        
+            String miliseconds_string  = String.format("%02d", miliseconds);
+            String seconds_string  = String.format("%02d", seconds);
+            String minutes_string  = String.format("%02d", minutes);
+
+            minutes = (elapsedTime/3600000) % 60;
+            seconds = (elapsedTime/60000) % 60;
+            miliseconds = (elapsedTime/1000) % 60;
+
+            for(int i=0; i<player_list.size(); i++){
+               elapsedTime = player_list.get(i).getTime();
+               minutes = (elapsedTime/3600000) % 60;
+               seconds = (elapsedTime/60000) % 60;
+               miliseconds = (elapsedTime/1000) % 60;
+               miliseconds_string  = String.format("%02d", miliseconds);
+               seconds_string  = String.format("%02d", seconds);
+               minutes_string  = String.format("%02d", minutes);
+               rankStr = rankStr + String.format("Rank %d: %s (%s) %n", i+1, player_list.get(i).getName(), minutes_string+":"+seconds_string+":"+miliseconds_string);
+            }
+            JOptionPane.showMessageDialog(null, rankStr);
          }
       });
 
@@ -115,12 +155,12 @@ public class SudokuMain extends JFrame {
 
       controllerPanel.add(difficultyDropBox);
       controllerPanel.add(newGameBtn);
-
-      controllerPanel.add(aboutBtn);
+      controllerPanel.add(stopWatch.timeLabel);
+      
       controllerPanel.add(restartGameBtn);
       controllerPanel.add(exitBtn);
-      controllerPanel.add(stopWatch.timeLabel);
-
+      
+      controllerPanel.add(aboutBtn);
       cp.add(controllerPanel, BorderLayout.SOUTH);
 
       // board.init();

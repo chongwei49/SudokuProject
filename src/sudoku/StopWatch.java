@@ -6,13 +6,13 @@ import javax.swing.*;
 
 public class StopWatch implements ActionListener {
     
-    JButton timeLabel = new JButton();
+    JLabel timeLabel = new JLabel();
     int elapsedTime = 0;
     int miliseconds = 0;
     int seconds = 0;
     int minutes = 0;
 
-    boolean start = false;
+
     String miliseconds_string  = String.format("%02d", miliseconds);
     String seconds_string  = String.format("%02d", seconds);
     String minutes_string  = String.format("%02d", minutes);
@@ -58,7 +58,6 @@ public class StopWatch implements ActionListener {
         seconds = 0;
         minutes = 0;
 
-        start = false;
         miliseconds_string  = String.format("%02d", miliseconds);
         seconds_string  = String.format("%02d", seconds);
         minutes_string  = String.format("%02d", minutes);
