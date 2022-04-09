@@ -22,6 +22,7 @@ public class GameBoard extends JPanel {
    // It also contains a Puzzle
    private Puzzle puzzle = Puzzle.getInstance();
 
+   private String result_time;
    // Constructor
    public GameBoard() {
       
@@ -101,6 +102,8 @@ public class GameBoard extends JPanel {
             }
          }
       }
+      SudokuMain.stopWatch.stop();
+      result_time = SudokuMain.stopWatch.returnTime();
       return true;
    }
 
@@ -135,7 +138,7 @@ public class GameBoard extends JPanel {
           * by call isSolved(). Put up a congratulation JOptionPane, if so.
           */
          if (isSolved())
-            JOptionPane.showMessageDialog(null, "Congratulation!");
+            JOptionPane.showMessageDialog(null, "Congratulation! You completed the game in "+result_time);
       }
    }
 }

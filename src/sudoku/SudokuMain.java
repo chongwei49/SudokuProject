@@ -16,13 +16,18 @@ public class SudokuMain extends JFrame {
    JButton restartGameBtn, cBtn, exitBtn, hardBtn, midBtn, easyBtn, slove, aboutBtn;
    JComboBox<String> difficultyDropBox;
 
-   StopWatch stopWatch;
+   static StopWatch stopWatch;
+
+   static IORankingDB ioRankingDB;
+
+   static String dir = System.getProperty("user.dir").replace("\\", "/");
 
    // Constructor
    public SudokuMain() {
       stopWatch = new StopWatch();
+      ioRankingDB = new IORankingDB();
       // Design Component
-      String dir = System.getProperty("user.dir").replace("\\", "/");
+      
 
       String[] optionsToChoose = { "Easy", "Medium", "Hard" };
 
