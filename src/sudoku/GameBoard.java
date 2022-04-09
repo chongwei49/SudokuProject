@@ -24,6 +24,7 @@ public class GameBoard extends JPanel {
 
    // Constructor
    public GameBoard() {
+      
       JPanel mainPanel = new JPanel(new GridLayout(SUBGRID_SIZE, SUBGRID_SIZE));
       // mainPanel.setLayout(new GridLayout(GRID_SIZE, GRID_SIZE)); // JPanel
       mainPanel.setBorder(BorderFactory.createEmptyBorder(GAP, GAP, GAP, GAP));

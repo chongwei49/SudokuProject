@@ -52,6 +52,20 @@ public class StopWatch implements ActionListener {
         timer.stop();
     }
 
+    void reset(){
+        elapsedTime = 0;
+        miliseconds = 0;
+        seconds = 0;
+        minutes = 0;
+
+        start = false;
+        miliseconds_string  = String.format("%02d", miliseconds);
+        seconds_string  = String.format("%02d", seconds);
+        minutes_string  = String.format("%02d", minutes);
+
+        timeLabel.setText(minutes_string+":"+seconds_string+":"+miliseconds_string);   
+    }
+
     String returnTime(){
         miliseconds_string  = String.format("%02d", miliseconds);
         seconds_string  = String.format("%02d", seconds);

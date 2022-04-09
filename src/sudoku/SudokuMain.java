@@ -16,8 +16,11 @@ public class SudokuMain extends JFrame {
    JButton restartGameBtn, cBtn, exitBtn, hardBtn, midBtn, easyBtn, slove, aboutBtn;
    JComboBox<String> difficultyDropBox;
 
+   StopWatch stopWatch;
+
    // Constructor
    public SudokuMain() {
+      stopWatch = new StopWatch();
       // Design Component
       String dir = System.getProperty("user.dir").replace("\\", "/");
 
@@ -32,11 +35,11 @@ public class SudokuMain extends JFrame {
       // this.add(new JLabel("", new
       // ImageIcon(dir+"/src/sudoku/Resource/sudoku_bg.gif"), JLabel.CENTER));
 
-      String fonts_list[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+      // String fonts_list[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 
-      for (int i = 0; i < fonts_list.length; i++) {
-         System.out.println(fonts_list[i]);
-      }
+      // for (int i = 0; i < fonts_list.length; i++) {
+      //    System.out.println(fonts_list[i]);
+      // }
 
       // Add a button to the south to re-start the game
       // ......
@@ -68,6 +71,7 @@ public class SudokuMain extends JFrame {
             board.init(difficulty(dropboxData));
             newGameBtn.setEnabled(false);
             restartGameBtn.setEnabled(true);
+            stopWatch.start();
          }
       });
 
@@ -90,6 +94,7 @@ public class SudokuMain extends JFrame {
          public void actionPerformed(ActionEvent e) {
             String dropboxData = difficultyDropBox.getItemAt(difficultyDropBox.getSelectedIndex());
             board.init(difficulty(dropboxData));
+            stopWatch.reset();
          }
       });
 
@@ -109,6 +114,7 @@ public class SudokuMain extends JFrame {
       controllerPanel.add(aboutBtn);
       controllerPanel.add(restartGameBtn);
       controllerPanel.add(exitBtn);
+      controllerPanel.add(stopWatch.timeLabel);
 
       cp.add(controllerPanel, BorderLayout.SOUTH);
 
