@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-
 /**
  * The main Sudoku program
  */
@@ -16,10 +15,10 @@ public class SudokuMain extends JFrame {
    JPanel center, controllerPanel;
    JButton restartGameBtn, cBtn, exitBtn, hardBtn, midBtn, easyBtn, slove, aboutBtn;
    JComboBox<String> difficultyDropBox;
-   
+
    // Constructor
    public SudokuMain() {
-      //Design Component
+      // Design Component
       String dir = System.getProperty("user.dir").replace("\\", "/");
 
       String[] optionsToChoose = { "Easy", "Medium", "Hard" };
@@ -28,12 +27,12 @@ public class SudokuMain extends JFrame {
       cp.setLayout(new BorderLayout());
 
       cp.add(board, BorderLayout.CENTER);
-      this.setIconImage(new ImageIcon(dir+"/src/sudoku/Resource/icon.png").getImage());
-      
-      //this.add(new JLabel("", new ImageIcon(dir+"/src/sudoku/Resource/sudoku_bg.gif"), JLabel.CENTER));
+      this.setIconImage(new ImageIcon(dir + "/src/sudoku/Resource/icon.png").getImage());
 
-      String fonts_list[] = 
-      GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+      // this.add(new JLabel("", new
+      // ImageIcon(dir+"/src/sudoku/Resource/sudoku_bg.gif"), JLabel.CENTER));
+
+      String fonts_list[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 
       for (int i = 0; i < fonts_list.length; i++) {
          System.out.println(fonts_list[i]);
@@ -64,8 +63,9 @@ public class SudokuMain extends JFrame {
          @Override
          public void actionPerformed(ActionEvent e) {
             String dropboxData = difficultyDropBox.getItemAt(difficultyDropBox.getSelectedIndex());
-            System.out.print(difficulty(dropboxData).level);
-            board.init();
+            System.out.print(difficulty(dropboxData));
+
+            board.init(difficulty(dropboxData));
             newGameBtn.setEnabled(false);
             restartGameBtn.setEnabled(true);
          }
@@ -88,7 +88,8 @@ public class SudokuMain extends JFrame {
 
          @Override
          public void actionPerformed(ActionEvent e) {
-            board.init();
+            String dropboxData = difficultyDropBox.getItemAt(difficultyDropBox.getSelectedIndex());
+            board.init(difficulty(dropboxData));
          }
       });
 
@@ -152,15 +153,12 @@ public class SudokuMain extends JFrame {
       return temp;
    }
 
-   public static void changeFont ( Component component)
-   {
-      Font font = new Font("ROG Fonts", 0, 10); 
-      component.setFont ( font );
-      if ( component instanceof Container )
-      {
-         for ( Component child : ( ( Container ) component ).getComponents () )
-         {
-               changeFont ( child );
+   public static void changeFont(Component component) {
+      Font font = new Font("ROG Fonts", 0, 10);
+      component.setFont(font);
+      if (component instanceof Container) {
+         for (Component child : ((Container) component).getComponents()) {
+            changeFont(child);
          }
       }
    }
