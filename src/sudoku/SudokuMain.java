@@ -2,8 +2,11 @@ package sudoku;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 import javax.swing.*;
 
@@ -29,11 +32,14 @@ public class SudokuMain extends JFrame {
 
    private static DBProcess dbProcess;
 
+   LoadingDialog loadingDialog;
+
    // Constructor
    public SudokuMain() {
       stopWatch = new StopWatch();
 
       // Design Component
+      //loadingDialog = new LoadingDialog();
 
       String[] optionsToChoose = { "Easy", "Medium", "Hard" };
 
@@ -56,12 +62,12 @@ public class SudokuMain extends JFrame {
       // this.add(new JLabel("", new
       // ImageIcon(dir+"/src/sudoku/Resource/sudoku_bg.gif"), JLabel.CENTER));
 
-      // String fonts_list[] =
-      // GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+      String fonts_list[] =
+      GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 
-      // for (int i = 0; i < fonts_list.length; i++) {
-      // System.out.println(fonts_list[i]);
-      // }
+      for (int i = 0; i < fonts_list.length; i++) {
+      System.out.println(fonts_list[i]);
+      }
 
       // Add a button to the south to re-start the game
       // ......
@@ -171,6 +177,9 @@ public class SudokuMain extends JFrame {
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Handle window closing
       setTitle("Sudoku");
       changeFont(controllerPanel);
+
+      setUIFont(new javax.swing.plaf.FontUIResource("Nunito Bold",Font.BOLD,12));
+
       setVisible(true);
    }
 
@@ -207,13 +216,28 @@ public class SudokuMain extends JFrame {
    }
 
    public static void changeFont(Component component) {
-      Font font = new Font("ROG Fonts", 0, 10);
-      component.setFont(font);
-      if (component instanceof Container) {
-         for (Component child : ((Container) component).getComponents()) {
-            changeFont(child);
+      try {
+         //create the font to use. Specify the size!
+         Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File(dir+"/src/sudoku/Resource/Nunito-ExtraBold.ttf")).deriveFont(12f);
+         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+         //register the extrabold
+         ge.registerFont(customFont);
+
+         Font customFont1 = Font.createFont(Font.TRUETYPE_FONT, new File(dir+"/src/sudoku/Resource/Nunito-Bold.ttf")).deriveFont(12f);
+         ge.registerFont(customFont1);
+
+         component.setFont(customFont);
+         if (component instanceof Container) {
+            for (Component child : ((Container) component).getComponents()) {
+               changeFont(child);
+            }
          }
+      } catch (IOException e) {
+            e.printStackTrace();
+      } catch(FontFormatException e) {
+            e.printStackTrace();
       }
+      
    }
 
    private String formatTime(int elapsedTime) {
@@ -252,4 +276,14 @@ public class SudokuMain extends JFrame {
       }
       return dbProcess;
    }
+
+   public static void setUIFont (javax.swing.plaf.FontUIResource f){
+      Enumeration keys = UIManager.getDefaults().keys();
+      while (keys.hasMoreElements()) {
+        Object key = keys.nextElement();
+        Object value = UIManager.get (key);
+        if (value instanceof javax.swing.plaf.FontUIResource)
+            UIManager.put (key, f);
+      }
+   } 
 }
