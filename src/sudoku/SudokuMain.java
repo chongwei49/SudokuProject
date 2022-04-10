@@ -132,6 +132,7 @@ public class SudokuMain extends JFrame {
 
             board.init(difficulty(dropboxData));
             board.removeKeyListener();
+            board.addKeyListener();
 
             newGameBtn.setEnabled(false);
             restartGameBtn.setEnabled(true);
@@ -174,11 +175,11 @@ public class SudokuMain extends JFrame {
             Image image = icon.getImage().getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
             icon = new ImageIcon(image);
             JOptionPane.showMessageDialog(cp, rankStr, "Ranking", JOptionPane.INFORMATION_MESSAGE, icon);
-            
+
          }
       });
       aboutBtn.addChangeListener(new ButtonHoverListener());
-      
+
       /*------------------------panal for restart Game button -------------------------------------*/
       restartGameBtn = new JButton("Restart Game");
       restartGameBtn.setEnabled(false);
@@ -188,7 +189,10 @@ public class SudokuMain extends JFrame {
          public void actionPerformed(ActionEvent e) {
             dropboxData = difficultyDropBox.getItemAt(difficultyDropBox.getSelectedIndex());
             board.init(difficulty(dropboxData));
+            board.addKeyListener();
+            board.removeKeyListener();
             stopWatch.reset();
+            stopWatch.start();
          }
       });
       restartGameBtn.addChangeListener(new ButtonHoverListener());
@@ -218,7 +222,6 @@ public class SudokuMain extends JFrame {
       controllerPanel.add(exitBtn);
 
       cp.add(controllerPanel, BorderLayout.SOUTH);
-
 
       // board.init();
 
@@ -340,8 +343,6 @@ public class SudokuMain extends JFrame {
       }
    }
 
-
-
    private class ButtonHoverListener implements ChangeListener {
 
       @Override
@@ -361,6 +362,5 @@ public class SudokuMain extends JFrame {
          }
       }
    }
-   
 
 }

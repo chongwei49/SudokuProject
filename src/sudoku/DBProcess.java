@@ -65,26 +65,33 @@ public class DBProcess {
     }
 
     public boolean updatePlayer(ArrayList<Player> player_list, String name, int time, String difficulty) {
-        boolean result = false;
+        boolean result = false, execute = false;
         try {
             query = "insert into Player (Name, Time, Difficulty) values(?,?,?)";
             pst = this.con.prepareStatement(query);
             pst.setString(1, name);
             pst.setInt(2, time);
             pst.setString(3, difficulty);
+            execute = true;
 
             for (int i = 0; i < player_list.size(); i++) {
                 if (name.equals(player_list.get(i).getName())
                         && difficulty.equals(player_list.get(i).getDifficulty())) {
-                    query = "update Player set Time = ? where Name = ? and Difficulty = ?";
-                    pst = this.con.prepareStatement(query);
-                    pst.setInt(1, time);
-                    pst.setString(2, name);
-                    pst.setString(3, difficulty);
-                    break;
+                    if (time < player_list.get(i).getTime()) {
+                        query = "update Player set Time = ? where Name = ? and Difficulty = ?";
+                        pst = this.con.prepareStatement(query);
+                        pst.setInt(1, time);
+                        pst.setString(2, name);
+                        pst.setString(3, difficulty);
+                        break;
+                    } else {
+                        execute = false;
+                    }
+
                 }
             }
-            pst.executeUpdate();
+            if (execute)
+                pst.executeUpdate();
             result = true;
         } catch (SQLException e) {
             System.out.print(e.getMessage());

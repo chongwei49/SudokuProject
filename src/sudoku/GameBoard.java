@@ -29,6 +29,8 @@ public class GameBoard extends JPanel {
 
    private String result_time;
 
+   String playerName = "";
+
    private CellInputListener listener;
 
    public int nume, deno;
@@ -83,12 +85,17 @@ public class GameBoard extends JPanel {
          }
       }
 
-      progressBar = new JProgressBar(0,100);
+      progressBar = new JProgressBar(0, 100);
       progressValue = 0;
       progressBar.setValue(progressValue);
-      progressBar.setUI(new BasicProgressBarUI(){
-         protected Color getSelectionBackground(){ return Color.white;}
-         protected Color getSelectionForeground(){ return Color.black;}
+      progressBar.setUI(new BasicProgressBarUI() {
+         protected Color getSelectionBackground() {
+            return Color.white;
+         }
+
+         protected Color getSelectionForeground() {
+            return Color.black;
+         }
       });
       progressBar.setForeground(Color.decode("#F4DF4E"));
       progressBar.setBackground(Color.decode("#949398"));
@@ -109,6 +116,7 @@ public class GameBoard extends JPanel {
       puzzle.newPuzzle(difficulty.level);
       nume = 0;
       deno = 0;
+      playerName = "";
       progressBar.setValue(0);
       difficultyLvl = difficulty(difficulty);
       // Based on the puzzle, initialize all the cells.
@@ -180,14 +188,17 @@ public class GameBoard extends JPanel {
              * and re-paint the cell via sourceCell.paint().
              */
             if (numberIn == sourceCell.number) {
+               if (cells[sourceCell.row][sourceCell.col].status != CellStatus.CORRECT_GUESS)
+                  nume = nume + 1;
                sourceCell.status = CellStatus.CORRECT_GUESS;
                sourceCell.removeKeyListener(listener);
-               nume = nume + 1;
+
             } else {
                sourceCell.status = CellStatus.WRONG_GUESS;
             }
             sourceCell.paint();
 
+            System.out.println("nume: " + nume);
             System.out.println(difficultyLvl);
 
             /*
@@ -195,20 +206,24 @@ public class GameBoard extends JPanel {
              * by call isSolved(). Put up a congratulation JOptionPane, if so.
              */
             setProgressBar();
-            if (isSolved()) {
-               String playerName = getPlayerName();
-               if (playerName != null && playerName.length() > 0) {
-                  JOptionPane.showMessageDialog(SudokuMain.cp,
-                        "Congratulation " + playerName + "! You completed the game in " + result_time);
 
-                  ArrayList<Player> player_list = dbProcess.getAllPlayer();
-                  dbProcess.updatePlayer(player_list, playerName, SudokuMain.stopWatch.elapsedTime, difficultyLvl);
+            if (isSolved()) {
+               if (playerName.equals("")) {
+                  playerName = getPlayerName();
+                  if (playerName != null && playerName.length() > 0) {
+                     JOptionPane.showMessageDialog(SudokuMain.cp,
+                           "Congratulation " + playerName + "! You completed the game in " + result_time);
+
+                     ArrayList<Player> player_list = dbProcess.getAllPlayer();
+                     dbProcess.updatePlayer(player_list, playerName, SudokuMain.stopWatch.elapsedTime, difficultyLvl);
+                  }
                }
+
             }
          } else {
             sourceCell.setText("");
          }
-         
+
       }
 
       @Override
@@ -278,18 +293,31 @@ public class GameBoard extends JPanel {
          for (int col = 0; col < cells[row].length; col++) {
             if (!cells[row][col].isEditable()) {
                cells[row][col].removeKeyListener(listener);
-               deno = deno + 1;
+               // deno = deno + 1;
             }
          }
       }
    }
 
-   public void setProgressBar(){
-      float percent = (((float)nume * 100.0f) / (float)((GameBoard.GRID_SIZE*GameBoard.GRID_SIZE) - deno));
+   public void addKeyListener() {
+      for (int row = 0; row < cells.length; row++) {
+         for (int col = 0; col < cells[row].length; col++) {
+            if (cells[row][col].isEditable()) {
+               cells[row][col].addKeyListener(listener);
+               deno = deno + 1;
+            }
+         }
+      }
+      System.out.println("Total: " + deno);
+   }
+
+   public void setProgressBar() {
+      // float percent = (((float) nume * 100.0f) / (float) ((GameBoard.GRID_SIZE *
+      // GameBoard.GRID_SIZE) - deno));
+      float percent = (((float) nume * 100.0f) / (float) (deno));
       progressValue = (int) percent;
       progressBar.setValue(progressValue);
    }
-
 
    private static String getPlayerName() {
       String result = "";
