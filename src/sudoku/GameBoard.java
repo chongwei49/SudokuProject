@@ -28,6 +28,8 @@ public class GameBoard extends JPanel {
 
    private String result_time;
 
+   private CellInputListener listener;
+
    // Constructor
    public GameBoard() {
 
@@ -64,13 +66,13 @@ public class GameBoard extends JPanel {
 
       // [TODO 3] Allocate a common listener as the ActionEvent listener for all the
       // Cells (JTextFields)
-      CellInputListener listener = new CellInputListener();
+      listener = new CellInputListener();
 
       // [TODO 4] Every editable cell adds this common listener
       for (int row = 0; row < cells.length; row++) {
          for (int col = 0; col < cells[row].length; col++) {
             if (cells[row][col].isEditable()) {
-               cells[row][col].addActionListener(listener); // For all editable rows and cols
+               cells[row][col].addKeyListener(listener); // For all editable rows and cols
             }
          }
       }
@@ -134,14 +136,17 @@ public class GameBoard extends JPanel {
    }
 
    // [TODO 2] Define a Listener Inner Class
-   private class CellInputListener implements ActionListener {
+   private class CellInputListener implements KeyListener {
+
       @Override
-      public void actionPerformed(ActionEvent e) {
+      public void keyTyped(KeyEvent e) {
          // Get a reference of the JTextField that triggers this action event
          Cell sourceCell = (Cell) e.getSource();
 
+         sourceCell.setText("");
+
          // Retrieve the int entered
-         int numberIn = Integer.parseInt(sourceCell.getText());
+         int numberIn = Character.getNumericValue(e.getKeyChar());
          // For debugging
          System.out.println("You entered " + numberIn);
          System.out.println(sourceCell.number);
@@ -175,7 +180,71 @@ public class GameBoard extends JPanel {
                dbProcess.updatePlayer(player_list, playerName, SudokuMain.stopWatch.elapsedTime, difficultyLvl);
             }
          }
+      }
 
+      @Override
+      public void keyPressed(KeyEvent e) {
+         // TODO Auto-generated method stub
+         
+      }
+
+      @Override
+      public void keyReleased(KeyEvent e) {
+         // TODO Auto-generated method stub
+         
+      }
+      
+      // @Override
+      // public void actionPerformed(ActionEvent e) {
+      //    // Get a reference of the JTextField that triggers this action event
+      //    Cell sourceCell = (Cell) e.getSource();
+
+      //    // Retrieve the int entered
+      //    int numberIn = Integer.parseInt(sourceCell.getText());
+      //    // For debugging
+      //    System.out.println("You entered " + numberIn);
+      //    System.out.println(sourceCell.number);
+
+      //    /*
+      //     * [TODO 5]
+      //     * Check the numberIn against sourceCell.number.
+      //     * Update the cell status sourceCell.status,
+      //     * and re-paint the cell via sourceCell.paint().
+      //     */
+      //    if (numberIn == sourceCell.number) {
+      //       sourceCell.status = CellStatus.CORRECT_GUESS;
+      //    } else {
+      //       sourceCell.status = CellStatus.WRONG_GUESS;
+      //    }
+      //    sourceCell.paint();
+
+      //    System.out.println(difficultyLvl);
+
+      //    /*
+      //     * [TODO 6][Later] Check if the player has solved the puzzle after this move,
+      //     * by call isSolved(). Put up a congratulation JOptionPane, if so.
+      //     */
+      //    if (isSolved()) {
+      //       String playerName = getPlayerName();
+      //       if (playerName != null && playerName.length() > 0) {
+      //          JOptionPane.showMessageDialog(SudokuMain.cp,
+      //                "Congratulation " + playerName + "! You completed the game in " + result_time);
+
+      //          ArrayList<Player> player_list = dbProcess.getAllPlayer();
+      //          dbProcess.updatePlayer(player_list, playerName, SudokuMain.stopWatch.elapsedTime, difficultyLvl);
+      //       }
+      //    }
+
+      // }
+   }
+
+   public void removeKeyListener(){
+      for (int row = 0; row < cells.length; row++) {
+         for (int col = 0; col < cells[row].length; col++) {
+            if (!cells[row][col].isEditable()) {
+               cells[row][col].removeKeyListener(listener);
+            }
+         }
       }
    }
 
