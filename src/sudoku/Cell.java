@@ -2,6 +2,7 @@ package sudoku;
 
 import java.awt.Color;
 import java.awt.Font;
+
 import javax.swing.JTextField;
 
 /**
@@ -55,6 +56,7 @@ public class Cell extends JTextField {
          super.setBackground(BG_NO_GUESS);
          super.setForeground(FG_NOT_SHOWN);
       } else if (status == CellStatus.CORRECT_GUESS) {
+         super.setText(number + "");
          super.setEditable(false);
          super.setBackground(BG_CORRECT_GUESS);
       } else if (status == CellStatus.WRONG_GUESS) {

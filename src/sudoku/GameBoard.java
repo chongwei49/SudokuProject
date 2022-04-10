@@ -151,94 +151,106 @@ public class GameBoard extends JPanel {
          System.out.println("You entered " + numberIn);
          System.out.println(sourceCell.number);
 
-         /*
-          * [TODO 5]
-          * Check the numberIn against sourceCell.number.
-          * Update the cell status sourceCell.status,
-          * and re-paint the cell via sourceCell.paint().
-          */
-         if (numberIn == sourceCell.number) {
-            sourceCell.status = CellStatus.CORRECT_GUESS;
-         } else {
-            sourceCell.status = CellStatus.WRONG_GUESS;
-         }
-         sourceCell.paint();
-
-         System.out.println(difficultyLvl);
-
-         /*
-          * [TODO 6][Later] Check if the player has solved the puzzle after this move,
-          * by call isSolved(). Put up a congratulation JOptionPane, if so.
-          */
-         if (isSolved()) {
-            String playerName = getPlayerName();
-            if (playerName != null && playerName.length() > 0) {
-               JOptionPane.showMessageDialog(SudokuMain.cp,
-                     "Congratulation " + playerName + "! You completed the game in " + result_time);
-
-               ArrayList<Player> player_list = dbProcess.getAllPlayer();
-               dbProcess.updatePlayer(player_list, playerName, SudokuMain.stopWatch.elapsedTime, difficultyLvl);
+         if (numberIn > 0 && numberIn < 10) {
+            /*
+             * [TODO 5]
+             * Check the numberIn against sourceCell.number.
+             * Update the cell status sourceCell.status,
+             * and re-paint the cell via sourceCell.paint().
+             */
+            if (numberIn == sourceCell.number) {
+               sourceCell.status = CellStatus.CORRECT_GUESS;
+               sourceCell.removeKeyListener(listener);
+            } else {
+               sourceCell.status = CellStatus.WRONG_GUESS;
             }
+            sourceCell.paint();
+
+            System.out.println(difficultyLvl);
+
+            /*
+             * [TODO 6][Later] Check if the player has solved the puzzle after this move,
+             * by call isSolved(). Put up a congratulation JOptionPane, if so.
+             */
+            if (isSolved()) {
+               String playerName = getPlayerName();
+               if (playerName != null && playerName.length() > 0) {
+                  JOptionPane.showMessageDialog(SudokuMain.cp,
+                        "Congratulation " + playerName + "! You completed the game in " + result_time);
+
+                  ArrayList<Player> player_list = dbProcess.getAllPlayer();
+                  dbProcess.updatePlayer(player_list, playerName, SudokuMain.stopWatch.elapsedTime, difficultyLvl);
+               }
+            }
+         } else {
+            sourceCell.setText("");
          }
+
       }
 
       @Override
       public void keyPressed(KeyEvent e) {
-         // TODO Auto-generated method stub
-         
+
       }
 
       @Override
       public void keyReleased(KeyEvent e) {
-         // TODO Auto-generated method stub
-         
+         Cell sourceCell = (Cell) e.getSource();
+         int numberIn = Character.getNumericValue(e.getKeyChar());
+         if (numberIn <= 0 || numberIn >= 10) {
+            sourceCell.setText("");
+            sourceCell.status = CellStatus.NO_GUESS;
+            sourceCell.paint();
+         }
       }
-      
+
       // @Override
       // public void actionPerformed(ActionEvent e) {
-      //    // Get a reference of the JTextField that triggers this action event
-      //    Cell sourceCell = (Cell) e.getSource();
+      // // Get a reference of the JTextField that triggers this action event
+      // Cell sourceCell = (Cell) e.getSource();
 
-      //    // Retrieve the int entered
-      //    int numberIn = Integer.parseInt(sourceCell.getText());
-      //    // For debugging
-      //    System.out.println("You entered " + numberIn);
-      //    System.out.println(sourceCell.number);
+      // // Retrieve the int entered
+      // int numberIn = Integer.parseInt(sourceCell.getText());
+      // // For debugging
+      // System.out.println("You entered " + numberIn);
+      // System.out.println(sourceCell.number);
 
-      //    /*
-      //     * [TODO 5]
-      //     * Check the numberIn against sourceCell.number.
-      //     * Update the cell status sourceCell.status,
-      //     * and re-paint the cell via sourceCell.paint().
-      //     */
-      //    if (numberIn == sourceCell.number) {
-      //       sourceCell.status = CellStatus.CORRECT_GUESS;
-      //    } else {
-      //       sourceCell.status = CellStatus.WRONG_GUESS;
-      //    }
-      //    sourceCell.paint();
+      // /*
+      // * [TODO 5]
+      // * Check the numberIn against sourceCell.number.
+      // * Update the cell status sourceCell.status,
+      // * and re-paint the cell via sourceCell.paint().
+      // */
+      // if (numberIn == sourceCell.number) {
+      // sourceCell.status = CellStatus.CORRECT_GUESS;
+      // } else {
+      // sourceCell.status = CellStatus.WRONG_GUESS;
+      // }
+      // sourceCell.paint();
 
-      //    System.out.println(difficultyLvl);
+      // System.out.println(difficultyLvl);
 
-      //    /*
-      //     * [TODO 6][Later] Check if the player has solved the puzzle after this move,
-      //     * by call isSolved(). Put up a congratulation JOptionPane, if so.
-      //     */
-      //    if (isSolved()) {
-      //       String playerName = getPlayerName();
-      //       if (playerName != null && playerName.length() > 0) {
-      //          JOptionPane.showMessageDialog(SudokuMain.cp,
-      //                "Congratulation " + playerName + "! You completed the game in " + result_time);
+      // /*
+      // * [TODO 6][Later] Check if the player has solved the puzzle after this move,
+      // * by call isSolved(). Put up a congratulation JOptionPane, if so.
+      // */
+      // if (isSolved()) {
+      // String playerName = getPlayerName();
+      // if (playerName != null && playerName.length() > 0) {
+      // JOptionPane.showMessageDialog(SudokuMain.cp,
+      // "Congratulation " + playerName + "! You completed the game in " +
+      // result_time);
 
-      //          ArrayList<Player> player_list = dbProcess.getAllPlayer();
-      //          dbProcess.updatePlayer(player_list, playerName, SudokuMain.stopWatch.elapsedTime, difficultyLvl);
-      //       }
-      //    }
+      // ArrayList<Player> player_list = dbProcess.getAllPlayer();
+      // dbProcess.updatePlayer(player_list, playerName,
+      // SudokuMain.stopWatch.elapsedTime, difficultyLvl);
+      // }
+      // }
 
       // }
    }
 
-   public void removeKeyListener(){
+   public void removeKeyListener() {
       for (int row = 0; row < cells.length; row++) {
          for (int col = 0; col < cells[row].length; col++) {
             if (!cells[row][col].isEditable()) {
