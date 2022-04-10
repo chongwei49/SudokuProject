@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicProgressBarUI;
 
 public class GameBoard extends JPanel {
    // Name-constants for the game board properties
@@ -29,6 +30,11 @@ public class GameBoard extends JPanel {
    private String result_time;
 
    private CellInputListener listener;
+
+   public int nume, deno;
+
+   JProgressBar progressBar;
+   int progressValue;
 
    // Constructor
    public GameBoard() {
@@ -76,6 +82,19 @@ public class GameBoard extends JPanel {
             }
          }
       }
+
+      progressBar = new JProgressBar(0,100);
+      progressValue = 0;
+      progressBar.setValue(progressValue);
+      progressBar.setUI(new BasicProgressBarUI(){
+         protected Color getSelectionBackground(){ return Color.white;}
+         protected Color getSelectionForeground(){ return Color.black;}
+      });
+      progressBar.setForeground(Color.decode("#F4DF4E"));
+      progressBar.setBackground(Color.decode("#949398"));
+      SudokuMain.changeFont(progressBar);
+      progressBar.setStringPainted(true);
+      super.add(progressBar, BorderLayout.NORTH);
 
       super.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
    }
@@ -161,6 +180,7 @@ public class GameBoard extends JPanel {
             if (numberIn == sourceCell.number) {
                sourceCell.status = CellStatus.CORRECT_GUESS;
                sourceCell.removeKeyListener(listener);
+               nume = nume + 1;
             } else {
                sourceCell.status = CellStatus.WRONG_GUESS;
             }
@@ -172,6 +192,7 @@ public class GameBoard extends JPanel {
              * [TODO 6][Later] Check if the player has solved the puzzle after this move,
              * by call isSolved(). Put up a congratulation JOptionPane, if so.
              */
+            setProgressBar();
             if (isSolved()) {
                String playerName = getPlayerName();
                if (playerName != null && playerName.length() > 0) {
@@ -185,7 +206,7 @@ public class GameBoard extends JPanel {
          } else {
             sourceCell.setText("");
          }
-
+         
       }
 
       @Override
@@ -255,10 +276,18 @@ public class GameBoard extends JPanel {
          for (int col = 0; col < cells[row].length; col++) {
             if (!cells[row][col].isEditable()) {
                cells[row][col].removeKeyListener(listener);
+               deno = deno + 1;
             }
          }
       }
    }
+
+   public void setProgressBar(){
+      float percent = (((float)nume * 100.0f) / (float)((GameBoard.GRID_SIZE*GameBoard.GRID_SIZE) - deno));
+      progressValue = (int) percent;
+      progressBar.setValue(progressValue);
+   }
+
 
    private static String getPlayerName() {
       String result = "";

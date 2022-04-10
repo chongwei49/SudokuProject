@@ -8,10 +8,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
+import javax.sound.midi.SysexMessage;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.MouseInputListener;
+import javax.swing.plaf.basic.BasicProgressBarUI;
 
 /**
  * The main Sudoku program
@@ -172,10 +173,11 @@ public class SudokuMain extends JFrame {
             Image image = icon.getImage().getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
             icon = new ImageIcon(image);
             JOptionPane.showMessageDialog(cp, rankStr, "Ranking", JOptionPane.INFORMATION_MESSAGE, icon);
+            
          }
       });
       aboutBtn.addChangeListener(new ButtonHoverListener());
-
+      
       /*------------------------panal for restart Game button -------------------------------------*/
       restartGameBtn = new JButton("Restart Game");
       restartGameBtn.setEnabled(false);
@@ -216,6 +218,7 @@ public class SudokuMain extends JFrame {
 
       cp.add(controllerPanel, BorderLayout.SOUTH);
 
+
       // board.init();
 
       pack(); // Pack the UI components, instead of setSize()
@@ -226,6 +229,7 @@ public class SudokuMain extends JFrame {
       setUIFont(new javax.swing.plaf.FontUIResource("Nunito Bold", Font.BOLD, 12));
 
       setVisible(true);
+
    }
 
    /** The entry main() entry method */
@@ -335,6 +339,8 @@ public class SudokuMain extends JFrame {
       }
    }
 
+
+
    private class ButtonHoverListener implements ChangeListener {
 
       @Override
@@ -354,5 +360,6 @@ public class SudokuMain extends JFrame {
          }
       }
    }
+   
 
 }
