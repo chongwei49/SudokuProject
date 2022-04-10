@@ -11,6 +11,7 @@ import java.util.Enumeration;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.MouseInputListener;
 
 /**
  * The main Sudoku program
@@ -41,7 +42,7 @@ public class SudokuMain extends JFrame {
    // Constructor
    public SudokuMain() {
       stopWatch = new StopWatch();
-      music.play();
+      music.playBGM();
 
       // Design Component
       // loadingDialog = new LoadingDialog();
@@ -106,9 +107,9 @@ public class SudokuMain extends JFrame {
          public void actionPerformed(ActionEvent e) {
 
             if (enableSound.isSelected()) {
-               music.play();
+               music.playBGM();
             } else {
-               music.stopPlay();
+               music.stopBGM();
             }
 
          }
@@ -130,8 +131,8 @@ public class SudokuMain extends JFrame {
             stopWatch.start();
          }
       });
-
-      /*------------------------panal for new about button -------------------------------------*/
+      newGameBtn.addChangeListener(new ButtonHoverListener());
+      /*------------------------panal for about button -------------------------------------*/
       aboutBtn = new JButton("Scoreboard");
 
       aboutBtn.addActionListener(new ActionListener() {
@@ -161,12 +162,16 @@ public class SudokuMain extends JFrame {
                }
 
             }
-
-            JOptionPane.showMessageDialog(cp, rankStr);
+            //JOptionPane.showMessageDialog(cp, rankStr);
+            ImageIcon icon = new ImageIcon(dir + "/src/sudoku/Resource/trophy.png");
+            Image image = icon.getImage().getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
+            icon = new ImageIcon(image);
+            JOptionPane.showMessageDialog(cp, rankStr, "Ranking", JOptionPane.INFORMATION_MESSAGE, icon);
          }
       });
+      aboutBtn.addChangeListener(new ButtonHoverListener());
 
-      /*------------------------panal for new New Game button -------------------------------------*/
+      /*------------------------panal for restart Game button -------------------------------------*/
       restartGameBtn = new JButton("Restart Game");
       restartGameBtn.setEnabled(false);
       restartGameBtn.addActionListener(new ActionListener() {
@@ -178,6 +183,7 @@ public class SudokuMain extends JFrame {
             stopWatch.reset();
          }
       });
+      restartGameBtn.addChangeListener(new ButtonHoverListener());
 
       /*------------------------panal for new Exit button -------------------------------------*/
       exitBtn = new JButton("Exit");
@@ -188,6 +194,9 @@ public class SudokuMain extends JFrame {
             System.exit(0);
          }
       });
+      exitBtn.addChangeListener(new ButtonHoverListener());
+
+      /*-------------------------------------------------------------------------------------------------*/
 
       controllerPanel.add(difficultyDropBox);
       controllerPanel.add(newGameBtn);
@@ -320,4 +329,23 @@ public class SudokuMain extends JFrame {
             UIManager.put(key, f);
       }
    }
+
+   private class ButtonHoverListener implements ChangeListener{
+
+      @Override
+      public void stateChanged(ChangeEvent e) {
+         JButton source = (JButton) e.getSource();
+         ButtonModel model = source.getModel();
+         if(model.isRollover() && !model.isPressed()){
+            music.playUFX();
+         }else{
+            music.stopUFX();
+         }
+
+         if(model.isPressed()){
+            music.playClick();
+         }
+      }     
+   }
+
 }

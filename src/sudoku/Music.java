@@ -1,83 +1,90 @@
 package sudoku;
 
 import java.io.File;
-import java.io.IOException;
-
-import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineEvent;
-import javax.sound.sampled.LineListener;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.FloatControl;
 
 public class Music {
     boolean playCompleted;
     static String dir = System.getProperty("user.dir").replace("\\", "/");
-    Clip clip;
+    Clip bgm, hover, click;
 
-    public void play() {
+    public void playBGM() {
 
-        File audioFile = new File(dir + "/src/sudoku/Resource/bensound-creativeminds.wav");
-
+        /*-----------------------------------------Reading BGM MAV-------------------------------------------*/
+        File audioFile = new File(dir + "/src/sudoku/Resource/sudoku_bgm.wav");
         try {
-            stopPlay();
+            stopBGM();
             AudioInputStream inputStream = AudioSystem
                     .getAudioInputStream(audioFile);
-            clip = AudioSystem.getClip();
-            clip.open(inputStream);
-            clip.start();
+                    bgm = AudioSystem.getClip();
+                    bgm.open(inputStream);
+            FloatControl gainControl = (FloatControl) bgm.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(-10.0f);
+            bgm.start();
         } catch (Exception e) {
-            stopPlay();
+            stopBGM();
             System.err.println(e.getMessage());
         }
 
-        // try {
-        // AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-
-        // AudioFormat format = audioStream.getFormat();
-
-        // DataLine.Info info = new DataLine.Info(Clip.class, format);
-
-        // Clip audioClip = (Clip) AudioSystem.getLine(info);
-
-        // // audioClip.addLineListener(this);
-
-        // audioClip.open(audioStream);
-
-        // audioClip.start();
-
-        // while (!playCompleted) {
-        // // wait for the playback completes
-        // try {
-        // Thread.sleep(1000);
-        // } catch (InterruptedException ex) {
-        // ex.printStackTrace();
-        // }
-        // }
-
-        // audioClip.close();
-
-        // } catch (UnsupportedAudioFileException ex) {
-        // System.out.println("The specified audio file is not supported.");
-        // ex.printStackTrace();
-        // } catch (LineUnavailableException ex) {
-        // System.out.println("Audio line for playing back is unavailable.");
-        // ex.printStackTrace();
-        // } catch (IOException ex) {
-        // System.out.println("Error playing the audio file.");
-        // ex.printStackTrace();
-        // }
-
     }
 
-    public void stopPlay() {
-        if (clip != null) {
-            clip.stop();
-            clip.close();
-            clip = null;
+    public void playUFX(){
+        /*-----------------------------------------Reading HOVER MAV-------------------------------------------*/
+        File audioFile = new File(dir + "/src/sudoku/Resource/hover_bgm.wav");
+        try {
+            stopUFX();
+            AudioInputStream inputStream = AudioSystem
+                    .getAudioInputStream(audioFile);
+                    hover = AudioSystem.getClip();
+                    hover.open(inputStream);
+            hover.start();
+        } catch (Exception e) {
+            stopUFX();
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public void playClick(){
+        /*-----------------------------------------Reading HOVER MAV-------------------------------------------*/
+        File audioFile = new File(dir + "/src/sudoku/Resource/click_bgm.wav");
+        try {
+            stopUFX();
+            AudioInputStream inputStream = AudioSystem
+                    .getAudioInputStream(audioFile);
+                    click = AudioSystem.getClip();
+                    click.open(inputStream);
+            click.start();
+        } catch (Exception e) {
+            stopUFX();
+            System.err.println(e.getMessage());
+        }
+    }
+
+
+    public void stopBGM() {
+        if (bgm != null) {
+            bgm.stop();
+            bgm.close();
+            bgm = null;
+        }
+    }
+
+    public void stopUFX(){
+        if (hover != null) {
+            hover.stop();
+            hover.close();
+            hover = null;
+        }
+    }
+
+    public void stopClick(){
+        if (click != null) {
+            click.stop();
+            click.close();
+            click = null;
         }
     }
 }
