@@ -107,7 +107,9 @@ public class GameBoard extends JPanel {
    public void init(Difficulty difficulty) {
       // Get a new puzzle
       puzzle.newPuzzle(difficulty.level);
-
+      nume = 0;
+      deno = 0;
+      progressBar.setValue(0);
       difficultyLvl = difficulty(difficulty);
       // Based on the puzzle, initialize all the cells.
       for (int row = 0; row < GRID_SIZE; ++row) {

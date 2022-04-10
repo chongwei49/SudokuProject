@@ -132,6 +132,7 @@ public class SudokuMain extends JFrame {
 
             board.init(difficulty(dropboxData));
             board.removeKeyListener();
+
             newGameBtn.setEnabled(false);
             restartGameBtn.setEnabled(true);
             stopWatch.start();
