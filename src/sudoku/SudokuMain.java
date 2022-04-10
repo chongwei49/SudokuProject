@@ -22,31 +22,45 @@ public class SudokuMain extends JFrame {
    static StopWatch stopWatch;
 
    ArrayList<Player> player_list;
+   String dropboxData;
+   public static Container cp;
 
    static String dir = System.getProperty("user.dir").replace("\\", "/");
+
+   private static DBProcess dbProcess;
 
    // Constructor
    public SudokuMain() {
       stopWatch = new StopWatch();
 
       // Design Component
-      
 
       String[] optionsToChoose = { "Easy", "Medium", "Hard" };
 
-      Container cp = getContentPane();
+      cp = getContentPane();
       cp.setLayout(new BorderLayout());
 
       cp.add(board, BorderLayout.CENTER);
       this.setIconImage(new ImageIcon(dir + "/src/sudoku/Resource/icon.png").getImage());
 
+      // try {
+      // dbProcess = new DBProcess(DBConnect.getConnection());
+      // } catch (ClassNotFoundException e2) {
+      // e2.printStackTrace();
+      // } catch (SQLException e2) {
+      // e2.printStackTrace();
+      // }
+
+      getDBInstance();
+
       // this.add(new JLabel("", new
       // ImageIcon(dir+"/src/sudoku/Resource/sudoku_bg.gif"), JLabel.CENTER));
 
-      // String fonts_list[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+      // String fonts_list[] =
+      // GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 
       // for (int i = 0; i < fonts_list.length; i++) {
-      //    System.out.println(fonts_list[i]);
+      // System.out.println(fonts_list[i]);
       // }
 
       // Add a button to the south to re-start the game
@@ -73,7 +87,7 @@ public class SudokuMain extends JFrame {
 
          @Override
          public void actionPerformed(ActionEvent e) {
-            String dropboxData = difficultyDropBox.getItemAt(difficultyDropBox.getSelectedIndex());
+            dropboxData = difficultyDropBox.getItemAt(difficultyDropBox.getSelectedIndex());
             System.out.print(difficulty(dropboxData));
 
             board.init(difficulty(dropboxData));
@@ -89,44 +103,32 @@ public class SudokuMain extends JFrame {
       aboutBtn.addActionListener(new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e) {
-            try {
-               DBProcess dbProcess = new DBProcess(DBConnect.getConnection());
-               player_list = dbProcess.getAllPlayer();
-               for(int i=0; i<player_list.size(); i++){
-                  System.out.println(player_list.get(i).getName());
+            String rankStr = "";
+            int elapsedTime;
+            for (int i = 0; i < optionsToChoose.length; i++) {
+               rankStr += String.format("Difficulty: %s%n", optionsToChoose[i]);
+               try {
+                  player_list = dbProcess.getAllPlayer(optionsToChoose[i]);
+
+                  for (int playerIndex = 0; playerIndex < player_list.size(); playerIndex++) {
+                     System.out.println(player_list.get(playerIndex).getName());
+
+                     elapsedTime = player_list.get(playerIndex).getTime();
+
+                     rankStr += String.format("Rank %d: %s (%s) %n", playerIndex + 1,
+                           player_list.get(playerIndex).getName(),
+                           formatTime(elapsedTime));
+                  }
+                  rankStr += "\n";
+
+                  // System.out.println(dbProcess.updatePlayer(player_list, "Sean", 100000));
+               } catch (Exception e1) {
+                  e1.printStackTrace();
                }
 
-               System.out.println(dbProcess.updatePlayer(player_list, "Sean", 100000));
-            } catch (ClassNotFoundException | SQLException e1) {
-               e1.printStackTrace();
             }
 
-            
-            String rankStr = "";
-            int elapsedTime = 0;
-            int miliseconds = 0;
-            int seconds = 0;
-            int minutes = 0;
-        
-            String miliseconds_string  = String.format("%02d", miliseconds);
-            String seconds_string  = String.format("%02d", seconds);
-            String minutes_string  = String.format("%02d", minutes);
-
-            minutes = (elapsedTime/3600000) % 60;
-            seconds = (elapsedTime/60000) % 60;
-            miliseconds = (elapsedTime/1000) % 60;
-
-            for(int i=0; i<player_list.size(); i++){
-               elapsedTime = player_list.get(i).getTime();
-               minutes = (elapsedTime/3600000) % 60;
-               seconds = (elapsedTime/60000) % 60;
-               miliseconds = (elapsedTime/1000) % 60;
-               miliseconds_string  = String.format("%02d", miliseconds);
-               seconds_string  = String.format("%02d", seconds);
-               minutes_string  = String.format("%02d", minutes);
-               rankStr = rankStr + String.format("Rank %d: %s (%s) %n", i+1, player_list.get(i).getName(), minutes_string+":"+seconds_string+":"+miliseconds_string);
-            }
-            JOptionPane.showMessageDialog(null, rankStr);
+            JOptionPane.showMessageDialog(cp, rankStr);
          }
       });
 
@@ -137,7 +139,7 @@ public class SudokuMain extends JFrame {
 
          @Override
          public void actionPerformed(ActionEvent e) {
-            String dropboxData = difficultyDropBox.getItemAt(difficultyDropBox.getSelectedIndex());
+            dropboxData = difficultyDropBox.getItemAt(difficultyDropBox.getSelectedIndex());
             board.init(difficulty(dropboxData));
             stopWatch.reset();
          }
@@ -156,10 +158,10 @@ public class SudokuMain extends JFrame {
       controllerPanel.add(difficultyDropBox);
       controllerPanel.add(newGameBtn);
       controllerPanel.add(stopWatch.timeLabel);
-      
+
       controllerPanel.add(restartGameBtn);
       controllerPanel.add(exitBtn);
-      
+
       controllerPanel.add(aboutBtn);
       cp.add(controllerPanel, BorderLayout.SOUTH);
 
@@ -212,5 +214,42 @@ public class SudokuMain extends JFrame {
             changeFont(child);
          }
       }
+   }
+
+   private String formatTime(int elapsedTime) {
+
+      int miliseconds = 0;
+      int seconds = 0;
+      int minutes = 0;
+
+      String miliseconds_string = String.format("%02d", miliseconds);
+      String seconds_string = String.format("%02d", seconds);
+      String minutes_string = String.format("%02d", minutes);
+
+      minutes = (elapsedTime / 3600000) % 60;
+      seconds = (elapsedTime / 60000) % 60;
+      miliseconds = (elapsedTime / 1000) % 60;
+
+      minutes = (elapsedTime / 3600000) % 60;
+      seconds = (elapsedTime / 60000) % 60;
+      miliseconds = (elapsedTime / 1000) % 60;
+      miliseconds_string = String.format("%02d", miliseconds);
+      seconds_string = String.format("%02d", seconds);
+      minutes_string = String.format("%02d", minutes);
+
+      return String.format("%s:%s:%s", minutes_string, seconds_string, miliseconds_string);
+   }
+
+   public static DBProcess getDBInstance() {
+      if (dbProcess == null) {
+         try {
+            dbProcess = new DBProcess(DBConnect.getConnection());
+         } catch (ClassNotFoundException e2) {
+            e2.printStackTrace();
+         } catch (SQLException e2) {
+            e2.printStackTrace();
+         }
+      }
+      return dbProcess;
    }
 }

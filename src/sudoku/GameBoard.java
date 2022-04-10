@@ -2,6 +2,8 @@ package sudoku;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+
 import javax.swing.*;
 
 public class GameBoard extends JPanel {
@@ -21,11 +23,14 @@ public class GameBoard extends JPanel {
    private Cell[][] cells = new Cell[GRID_SIZE][GRID_SIZE];
    // It also contains a Puzzle
    private Puzzle puzzle = Puzzle.getInstance();
+   private DBProcess dbProcess = SudokuMain.getDBInstance();
+   private String difficultyLvl = "";
 
    private String result_time;
+
    // Constructor
    public GameBoard() {
-      
+
       JPanel mainPanel = new JPanel(new GridLayout(SUBGRID_SIZE, SUBGRID_SIZE));
       // mainPanel.setLayout(new GridLayout(GRID_SIZE, GRID_SIZE)); // JPanel
       mainPanel.setBorder(BorderFactory.createEmptyBorder(GAP, GAP, GAP, GAP));
@@ -82,12 +87,33 @@ public class GameBoard extends JPanel {
       // Get a new puzzle
       puzzle.newPuzzle(difficulty.level);
 
+      difficultyLvl = difficulty(difficulty);
       // Based on the puzzle, initialize all the cells.
       for (int row = 0; row < GRID_SIZE; ++row) {
          for (int col = 0; col < GRID_SIZE; ++col) {
             cells[row][col].init(puzzle.numbers[row][col], puzzle.isShown[row][col]);
          }
       }
+   }
+
+   private String difficulty(Difficulty data) {
+      String temp;
+      switch (data) {
+         case EASY:
+            temp = "Easy";
+            break;
+         case MEDIUM:
+            temp = "Medium";
+            break;
+         case HARD:
+            temp = "Hard";
+            break;
+         default:
+            temp = "Easy";
+            break;
+      }
+
+      return temp;
    }
 
    /**
@@ -133,12 +159,39 @@ public class GameBoard extends JPanel {
          }
          sourceCell.paint();
 
+         System.out.println(difficultyLvl);
+
          /*
           * [TODO 6][Later] Check if the player has solved the puzzle after this move,
           * by call isSolved(). Put up a congratulation JOptionPane, if so.
           */
-         if (isSolved())
-            JOptionPane.showMessageDialog(null, "Congratulation! You completed the game in "+result_time);
+         if (isSolved()) {
+            String playerName = getPlayerName();
+            if (playerName != null && playerName.length() > 0) {
+               JOptionPane.showMessageDialog(SudokuMain.cp,
+                     "Congratulation " + playerName + "! You completed the game in " + result_time);
+
+               ArrayList<Player> player_list = dbProcess.getAllPlayer();
+               dbProcess.updatePlayer(player_list, playerName, SudokuMain.stopWatch.elapsedTime, difficultyLvl);
+            }
+         }
+
       }
+   }
+
+   private static String getPlayerName() {
+      String result = "";
+      do {
+         result = (String) JOptionPane.showInputDialog(
+               SudokuMain.cp,
+               "Enter your name",
+               "Sudoku",
+               JOptionPane.PLAIN_MESSAGE,
+               null,
+               null,
+               "");
+      } while (result == null || result.trim().length() <= 0);
+
+      return result;
    }
 }

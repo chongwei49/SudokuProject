@@ -1,7 +1,9 @@
 package sudoku;
+
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JTextField;
+
 /**
  * Customize (subclass) the JTextField to include
  * row/column numbers and status of each cell.
@@ -12,23 +14,23 @@ public class Cell extends JTextField {
    public static final Color FG_SHOWN = Color.BLACK;
    public static final Color FG_NOT_SHOWN = Color.GRAY;
    public static final Color BG_NO_GUESS = Color.YELLOW;
-   public static final Color BG_CORRECT_GUESS = new Color(0, 216, 0);  // RGB
+   public static final Color BG_CORRECT_GUESS = new Color(0, 216, 0); // RGB
    public static final Color BG_WRONG_GUESS = new Color(216, 0, 0);
    public static final Font FONT_NUMBERS = new Font("Monospaced", Font.BOLD, 24);
 
    // All variables have package access
-   int row, col;  // The row and column number [0-8] of the cell
-   int number;    // The puzzle number [1-9] for this cell
+   int row, col; // The row and column number [0-8] of the cell
+   int number; // The puzzle number [1-9] for this cell
    CellStatus status; // An enumeration defined in CellStatus
 
    // Constructor
    public Cell(int row, int col) {
-      super();   // JTextField
+      super(); // JTextField
       this.row = row;
       this.col = col;
       // Inherited from JTextField: Beautify all the cells once for all
       super.setHorizontalAlignment(JTextField.CENTER);
-      super.setFont(FONT_NUMBERS);  // default font
+      super.setFont(FONT_NUMBERS); // default font
    }
 
    // Initialize the cell for a new game, given the puzzle number and isShown
@@ -53,7 +55,7 @@ public class Cell extends JTextField {
          super.setBackground(BG_NO_GUESS);
          super.setForeground(FG_NOT_SHOWN);
       } else if (status == CellStatus.CORRECT_GUESS) {
-         super.setEditable(true);
+         super.setEditable(false);
          super.setBackground(BG_CORRECT_GUESS);
       } else if (status == CellStatus.WRONG_GUESS) {
          super.setEditable(true);
