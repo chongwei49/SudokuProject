@@ -25,7 +25,6 @@ public class SudokuMain extends JFrame {
    JButton restartGameBtn, cBtn, exitBtn, hardBtn, midBtn, easyBtn, slove, aboutBtn;
    JComboBox<String> difficultyDropBox;
    JCheckBox enableSound;
-   Music music = new Music();
 
    static StopWatch stopWatch;
 
@@ -42,7 +41,11 @@ public class SudokuMain extends JFrame {
    // Constructor
    public SudokuMain() {
       stopWatch = new StopWatch();
-      music.playBGM();
+      // music.playBGM();
+
+      SoundEffect.init();
+      SoundEffect.volume = SoundEffect.Volume.LOW;
+      SoundEffect.BG_MUSIC.play();
 
       // Design Component
       // loadingDialog = new LoadingDialog();
@@ -107,9 +110,11 @@ public class SudokuMain extends JFrame {
          public void actionPerformed(ActionEvent e) {
 
             if (enableSound.isSelected()) {
-               music.playBGM();
+               // music.playBGM();
+               SoundEffect.BG_MUSIC.play();
             } else {
-               music.stopBGM();
+               // music.stopBGM();
+               SoundEffect.BG_MUSIC.stop();
             }
 
          }
@@ -162,7 +167,7 @@ public class SudokuMain extends JFrame {
                }
 
             }
-            //JOptionPane.showMessageDialog(cp, rankStr);
+            // JOptionPane.showMessageDialog(cp, rankStr);
             ImageIcon icon = new ImageIcon(dir + "/src/sudoku/Resource/trophy.png");
             Image image = icon.getImage().getScaledInstance(50, 50, java.awt.Image.SCALE_SMOOTH);
             icon = new ImageIcon(image);
@@ -330,22 +335,24 @@ public class SudokuMain extends JFrame {
       }
    }
 
-   private class ButtonHoverListener implements ChangeListener{
+   private class ButtonHoverListener implements ChangeListener {
 
       @Override
       public void stateChanged(ChangeEvent e) {
          JButton source = (JButton) e.getSource();
          ButtonModel model = source.getModel();
-         if(model.isRollover() && !model.isPressed()){
-            music.playUFX();
-         }else{
-            music.stopUFX();
+         if (model.isRollover() && !model.isPressed()) {
+            // music.playUFX();
+            SoundEffect.HOVER.play();
+         } else {
+            // music.stopUFX();
          }
 
-         if(model.isPressed()){
-            music.playClick();
+         if (model.isPressed()) {
+            // music.playClick();
+            SoundEffect.CLICK.play();
          }
-      }     
+      }
    }
 
 }
