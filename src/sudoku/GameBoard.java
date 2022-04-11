@@ -54,7 +54,6 @@ public class GameBoard extends JPanel {
             panels[row][col] = new JPanel(new GridLayout(SUBGRID_SIZE, SUBGRID_SIZE, 1, 1));
             panels[row][col].setBackground(BG);
             panels[row][col].setBorder(BorderFactory.createEmptyBorder(GAP, GAP, GAP, GAP));
-
             mainPanel.add(panels[row][col]); // JPanel
          }
       }
@@ -80,7 +79,7 @@ public class GameBoard extends JPanel {
       for (int row = 0; row < cells.length; row++) {
          for (int col = 0; col < cells[row].length; col++) {
             if (cells[row][col].isEditable()) {
-               cells[row][col].addKeyListener(listener); // For all editable rows and cols
+               cells[row][col].setEditable(false);
             }
          }
       }
@@ -113,7 +112,7 @@ public class GameBoard extends JPanel {
     */
    public void init(Difficulty difficulty) {
       // Get a new puzzle
-      puzzle.newPuzzle(difficulty.level);
+      puzzle.newPuzzle(difficulty.level);    
       nume = 0;
       deno = 0;
       playerName = "";
@@ -125,6 +124,8 @@ public class GameBoard extends JPanel {
             cells[row][col].init(puzzle.numbers[row][col], puzzle.isShown[row][col]);
          }
       }
+      removeKeyListener();
+      addKeyListener();
    }
 
    private String difficulty(Difficulty data) {
@@ -291,10 +292,11 @@ public class GameBoard extends JPanel {
    public void removeKeyListener() {
       for (int row = 0; row < cells.length; row++) {
          for (int col = 0; col < cells[row].length; col++) {
-            if (!cells[row][col].isEditable()) {
-               cells[row][col].removeKeyListener(listener);
-               // deno = deno + 1;
-            }
+            // if (!cells[row][col].isEditable() && cells[row][col].status == CellStatus.SHOWN) {
+            //    cells[row][col].removeKeyListener(listener);
+            //    // deno = deno + 1;
+            // }
+            cells[row][col].removeKeyListener(listener);
          }
       }
    }

@@ -131,8 +131,7 @@ public class SudokuMain extends JFrame {
             System.out.print(difficulty(dropboxData));
 
             board.init(difficulty(dropboxData));
-            board.removeKeyListener();
-            board.addKeyListener();
+
 
             newGameBtn.setEnabled(false);
             restartGameBtn.setEnabled(true);
@@ -188,9 +187,11 @@ public class SudokuMain extends JFrame {
          @Override
          public void actionPerformed(ActionEvent e) {
             dropboxData = difficultyDropBox.getItemAt(difficultyDropBox.getSelectedIndex());
+
             board.init(difficulty(dropboxData));
-            board.addKeyListener();
-            board.removeKeyListener();
+
+            
+
             stopWatch.reset();
             stopWatch.start();
          }
